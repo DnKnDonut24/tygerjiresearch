@@ -1,9 +1,0 @@
-{
-  "cleanUrls": true,
-  "trailingSlash": false,
-  "functions": {
-    "api/market.js": {
-      "maxDuration": 10
-    }
-  }
-}

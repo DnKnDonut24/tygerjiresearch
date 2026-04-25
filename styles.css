@@ -1,3 +1,10 @@
+
+/* Fix: keep hidden modal/loading overlay fully invisible on first page load */
+[hidden],
+.modal-backdrop[hidden] {
+  display: none !important;
+}
+
 :root {
   --ink: #111827;
   --muted: #64748b;

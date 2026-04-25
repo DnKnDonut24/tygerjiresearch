@@ -1,2 +1,5 @@
 [build]
   publish = "."
+
+# This package is optimized for Vercel because /api/market.js is a Vercel serverless function.
+# For Netlify, the API function would need to be converted to Netlify Functions syntax.

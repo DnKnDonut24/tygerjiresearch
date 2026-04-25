@@ -1,41 +1,59 @@
-# Tyger Ji Research — Website V2
+# Tyger Ji Research — Live Market Website
 
-This is a standalone personal research website for market notes, ticker analysis, investment frameworks, and knowledge exchange.
+This version includes:
 
-## How to preview
+- Editable content in `content.js`
+- Live market data through `api/market.js`
+- Yahoo Finance chart endpoint proxy through a Vercel serverless function
+- Searchable live market board
+- Blog posts rewritten in Tyger's personal market-outlook style
+- No API key required for the Yahoo endpoint version
 
-Open `index.html` in a browser.
+## How live data works
 
-## How to edit content
+The browser calls:
 
-Edit `content.js`.
+`/api/market?items=SPX:^GSPC,AAPL:AAPL,...`
 
-Main editable areas:
-- Profile / hero copy
-- Contact email
-- Market indicators
-- Tickers and thesis notes
-- Blog posts / research notes
-- Images
-- About section
-- Framework cards
+The Vercel serverless function fetches Yahoo Finance chart data server-side, then returns:
+- latest price
+- daily percentage move
+- 6-month chart data
+- chart labels
+- update timestamp
 
-## How to deploy
+The static numbers inside `content.js` are only fallback values.
 
-You can deploy this exact folder to Vercel, Netlify, Cloudflare Pages, or GitHub Pages.
+## How to update your deployed Vercel site
 
-### Vercel
-1. Upload this folder to a GitHub repository.
-2. Import the repository into Vercel.
-3. Framework preset: Other / Static.
-4. Output directory: leave blank.
-5. Deploy.
+1. Replace your current GitHub repo files with the files in this folder.
+2. Commit and push to GitHub.
+3. Vercel will redeploy automatically.
+4. Open your website and check the "Live market board" status.
 
-### Custom domain
+## Editing blog posts
 
-After the site is deployed, connect `tygerjiresearch.com` in your hosting platform's domain settings.
-You will need access to the domain registrar to update DNS records.
+Open `content.js`.
+Find `posts: [...]`.
+Each post has:
+- `title`
+- `summary`
+- `body`
+- `category`
+- `image`
 
-## Future CMS upgrade
+## Editing tickers
 
-For true no-code editing, add Decap CMS or TinaCMS so posts and tickers can be edited through an `/admin` dashboard.
+Open `content.js`.
+Find `tickers: {...}`.
+
+Each ticker uses:
+- `yahoo`: the Yahoo Finance symbol used by the live function
+- static fallback `price`, `change`, and `data`
+- your thesis notes
+
+Examples:
+- S&P 500: `yahoo: "^GSPC"`
+- Nasdaq Composite: `yahoo: "^IXIC"`
+- VIX: `yahoo: "^VIX"`
+- Bitcoin: `yahoo: "BTC-USD"`

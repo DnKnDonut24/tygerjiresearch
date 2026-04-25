@@ -1,25 +1,39 @@
 const C = window.SITE_CONTENT;
-const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun"];
-
-let selectedTicker = "MSFT";
+let marketState = structuredClone(C.tickers);
+let selectedTicker = "SPX";
 let selectedCategory = "All";
-let openPostId = null;
 
 function $(selector) {
   return document.querySelector(selector);
 }
 
-function money(value) {
-  if (value >= 1000) return "$" + value.toLocaleString(undefined, { maximumFractionDigits: 0 });
-  return "$" + value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+function money(value, currency = "USD") {
+  if (value === undefined || value === null || Number.isNaN(Number(value))) return "—";
+  const n = Number(value);
+  const options = n >= 1000
+    ? { maximumFractionDigits: 0 }
+    : { minimumFractionDigits: 2, maximumFractionDigits: 2 };
+  if (currency === "USD") return "$" + n.toLocaleString(undefined, options);
+  return n.toLocaleString(undefined, options);
+}
+
+function pct(value) {
+  if (value === undefined || value === null || Number.isNaN(Number(value))) return "—";
+  const n = Number(value);
+  return `${n >= 0 ? "+" : ""}${n.toFixed(2)}%`;
+}
+
+function chartValues(item) {
+  return Array.isArray(item.data) && item.data.length > 1 ? item.data.map(Number).filter(Number.isFinite) : [1, 2, 3, 4, 5, 6];
 }
 
 function chartPoints(values, width = 640, height = 260, padding = 28) {
-  const min = Math.min(...values);
-  const max = Math.max(...values);
+  const clean = values.map(Number).filter(Number.isFinite);
+  const min = Math.min(...clean);
+  const max = Math.max(...clean);
   const range = max - min || 1;
-  return values.map((value, index) => ({
-    x: padding + (index * (width - padding * 2)) / (values.length - 1),
+  return clean.map((value, index) => ({
+    x: padding + (index * (width - padding * 2)) / Math.max(clean.length - 1, 1),
     y: height - padding - ((value - min) / range) * (height - padding * 2),
     value
   }));
@@ -31,14 +45,24 @@ function chartPath(values, width = 640, height = 260, padding = 28) {
     .join(" ");
 }
 
-function mainChart(values, ticker) {
+function labelIndexes(length) {
+  if (length <= 6) return Array.from({ length }, (_, i) => i);
+  const count = 5;
+  return Array.from({ length: count }, (_, i) => Math.round((i * (length - 1)) / (count - 1)));
+}
+
+function mainChart(item, ticker) {
+  const values = chartValues(item);
   const path = chartPath(values);
   const pts = chartPoints(values);
   const min = Math.min(...values);
   const max = Math.max(...values);
   const area = `${path} L 612 232 L 28 232 Z`;
+  const labels = item.labels || [];
+  const indexes = new Set(labelIndexes(values.length));
+
   return `
-    <svg class="chart chart-large" viewBox="0 0 640 260" role="img" aria-label="${ticker} chart">
+    <svg class="chart chart-large" viewBox="0 0 640 260" role="img" aria-label="${ticker} six-month chart">
       <defs>
         <linearGradient id="chartFill" x1="0" x2="0" y1="0" y2="1">
           <stop offset="0%" stop-color="rgba(166,124,82,.32)" />
@@ -50,17 +74,18 @@ function mainChart(values, ticker) {
       <path d="${path}" class="chart-line" />
       ${pts.map((p, i) => `
         <g>
-          <circle cx="${p.x}" cy="${p.y}" r="4.5" class="chart-dot"></circle>
-          <text x="${p.x}" y="252" text-anchor="middle" class="chart-label">${months[i]}</text>
+          ${indexes.has(i) ? `<circle cx="${p.x}" cy="${p.y}" r="4.5" class="chart-dot"></circle>` : ""}
+          ${indexes.has(i) ? `<text x="${p.x}" y="252" text-anchor="middle" class="chart-label">${labels[i] || ""}</text>` : ""}
         </g>
       `).join("")}
-      <text x="36" y="28" class="axis-label">${money(max)}</text>
-      <text x="36" y="226" class="axis-label">${money(min)}</text>
+      <text x="36" y="28" class="axis-label">${money(max, item.currency)}</text>
+      <text x="36" y="226" class="axis-label">${money(min, item.currency)}</text>
     </svg>
   `;
 }
 
-function miniChart(values, positive) {
+function miniChart(item, positive) {
+  const values = chartValues(item);
   return `
     <svg class="mini-chart" viewBox="0 0 180 58" preserveAspectRatio="none" aria-hidden="true">
       <path d="${chartPath(values, 180, 58, 6)}" class="${positive ? "mini-line positive" : "mini-line negative"}" />
@@ -92,7 +117,7 @@ function renderShell() {
           <p class="hero-text">${C.profile.subheadline}</p>
           <div class="hero-actions">
             <a class="button primary" href="#notes">Read notes</a>
-            <a class="button secondary" href="#markets">View market board</a>
+            <a class="button secondary" href="#markets">View live market board</a>
           </div>
         </div>
         <div class="hero-media">
@@ -121,8 +146,8 @@ function renderShell() {
           <h2>Not a prediction feed. A thinking system.</h2>
         </div>
         <p>
-          The site is structured around a simple research habit: state the thesis,
-          define the risk, identify the catalyst, and keep updating the view when facts change.
+          My notes are organized around the same structure I use when thinking through markets:
+          what is the setup, what is the market missing, what could go wrong, and what would change the view.
         </p>
       </section>
 
@@ -133,10 +158,12 @@ function renderShell() {
 
       <section id="markets" class="section-block split-intro">
         <div>
-          <p class="kicker">Market board</p>
-          <h2>Major tickers, current lens, and thesis notes.</h2>
+          <p class="kicker">Live market board</p>
+          <h2>Major tickers, indexes, current lens, and thesis notes.</h2>
         </div>
-        <div class="market-search">
+        <div class="market-tools">
+          <div class="market-status" id="marketStatus">Loading live prices...</div>
+          <button class="refresh-button" id="refreshMarket">Refresh data</button>
           <input id="tickerSearch" type="search" placeholder="Search ticker, company, or sector" />
         </div>
       </section>
@@ -152,8 +179,7 @@ function renderShell() {
           <h2>The four questions behind every note.</h2>
         </div>
         <p>
-          I want the site to feel like an open investment notebook: specific enough to be useful,
-          transparent enough to be challenged, and simple enough to keep updated.
+          The goal is to make my thinking specific enough to be useful and transparent enough to be challenged.
         </p>
       </section>
 
@@ -172,8 +198,7 @@ function renderShell() {
           <p class="kicker">Knowledge exchange</p>
           <h2>Build a market memo.</h2>
           <p>
-            Use this section to draft a thought, test your structure, or send me a question.
-            It saves locally in your browser for preview purposes.
+            Use this to draft a quick market thought. It saves locally in your browser and can be emailed directly.
           </p>
         </div>
         <form id="memoForm">
@@ -218,6 +243,7 @@ function renderShell() {
   renderTickers();
   renderTickerDetail();
   loadMemo();
+  refreshMarketData();
 }
 
 function renderFeaturedNote() {
@@ -260,13 +286,13 @@ function renderPosts() {
 }
 
 function renderTickers(search = "") {
-  const tickers = Object.entries(C.tickers).filter(([ticker, item]) => {
+  const tickers = Object.entries(marketState).filter(([ticker, item]) => {
     const haystack = `${ticker} ${item.name} ${item.sector}`.toLowerCase();
     return haystack.includes(search.toLowerCase());
   });
 
   $("#tickerRail").innerHTML = tickers.map(([ticker, item]) => {
-    const positive = item.change >= 0;
+    const positive = Number(item.change) >= 0;
     return `
       <button class="ticker-button ${ticker === selectedTicker ? "active" : ""}" onclick="selectTicker('${ticker}')">
         <div class="ticker-top">
@@ -274,17 +300,17 @@ function renderTickers(search = "") {
             <strong>${ticker}</strong>
             <span>${item.name}</span>
           </div>
-          <em class="${positive ? "up" : "down"}">${positive ? "↗" : "↘"} ${positive ? "+" : ""}${item.change}%</em>
+          <em class="${positive ? "up" : "down"}">${positive ? "↗" : "↘"} ${pct(item.change)}</em>
         </div>
-        ${miniChart(item.data, positive)}
+        ${miniChart(item, positive)}
       </button>
     `;
   }).join("");
 }
 
 function renderTickerDetail() {
-  const item = C.tickers[selectedTicker];
-  const positive = item.change >= 0;
+  const item = marketState[selectedTicker];
+  const positive = Number(item.change) >= 0;
   $("#tickerDetail").innerHTML = `
     <div class="ticker-detail-header">
       <div>
@@ -293,12 +319,12 @@ function renderTickerDetail() {
         <p>${item.name}</p>
       </div>
       <div class="ticker-price">
-        <strong>${money(item.price)}</strong>
-        <em class="${positive ? "up" : "down"}">${positive ? "+" : ""}${item.change}%</em>
+        <strong>${money(item.price, item.currency)}</strong>
+        <em class="${positive ? "up" : "down"}">${pct(item.change)}</em>
       </div>
     </div>
 
-    ${mainChart(item.data, selectedTicker)}
+    ${mainChart(item, selectedTicker)}
 
     <div class="ticker-thesis-grid">
       <article>
@@ -323,6 +349,7 @@ function renderTickerDetail() {
 
 function bindEvents() {
   $("#tickerSearch").addEventListener("input", e => renderTickers(e.target.value));
+  $("#refreshMarket").addEventListener("click", refreshMarketData);
   $("#modalBackdrop").addEventListener("click", e => {
     if (e.target.id === "modalBackdrop") closePost();
   });
@@ -341,24 +368,78 @@ function selectCategory(category) {
   renderPosts();
 }
 
+async function refreshMarketData() {
+  const status = $("#marketStatus");
+  const button = $("#refreshMarket");
+  const items = Object.entries(C.tickers)
+    .map(([key, item]) => `${key}:${item.yahoo || key}`)
+    .join(",");
+
+  try {
+    status.textContent = "Updating live prices...";
+    button.disabled = true;
+
+    const res = await fetch(`/api/market?items=${encodeURIComponent(items)}`, {
+      headers: { "Accept": "application/json" }
+    });
+
+    if (!res.ok) throw new Error(`Market API returned ${res.status}`);
+    const payload = await res.json();
+
+    if (!payload || !Array.isArray(payload.results)) {
+      throw new Error("Invalid market payload");
+    }
+
+    payload.results.forEach(result => {
+      if (!result.key || !marketState[result.key]) return;
+      marketState[result.key] = {
+        ...marketState[result.key],
+        price: result.price ?? marketState[result.key].price,
+        change: result.changePercent ?? marketState[result.key].change,
+        currency: result.currency || marketState[result.key].currency || "USD",
+        data: Array.isArray(result.data) && result.data.length > 2 ? result.data : marketState[result.key].data,
+        labels: Array.isArray(result.labels) ? result.labels : marketState[result.key].labels,
+        asOf: result.asOf
+      };
+    });
+
+    renderTickers($("#tickerSearch").value);
+    renderTickerDetail();
+
+    const time = payload.generatedAt
+      ? new Date(payload.generatedAt).toLocaleString([], { dateStyle: "medium", timeStyle: "short" })
+      : "just now";
+
+    status.textContent = `Live prices updated ${time}`;
+  } catch (error) {
+    console.warn(error);
+    status.textContent = "Static preview data shown. Live prices will update after deploying the /api/market function on Vercel.";
+  } finally {
+    button.disabled = false;
+  }
+}
+
 function openPost(id) {
   const post = C.posts.find(p => p.id === id);
   if (!post) return;
-  openPostId = id;
+
+  const bodyHtml = Array.isArray(post.body)
+    ? post.body.map(p => `<p>${p}</p>`).join("")
+    : `<p>${post.body || ""}</p>`;
+
   $("#modalContent").innerHTML = `
     <button class="modal-close" onclick="closePost()">×</button>
     <img src="${post.image}" alt="${post.title}" />
     <span>${post.category} · ${post.date} · ${post.readTime}</span>
     <h2>${post.title}</h2>
     <p class="modal-summary">${post.summary}</p>
-    <p>${post.body}</p>
+    ${bodyHtml}
   `;
   $("#modalBackdrop").hidden = false;
   document.body.classList.add("modal-open");
 }
 
 function closePost() {
-  openPostId = null;
   $("#modalBackdrop").hidden = true;
   document.body.classList.remove("modal-open");
 }

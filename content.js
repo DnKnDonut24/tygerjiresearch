@@ -1,9 +1,11 @@
 /*
   TYGER JI RESEARCH — SIMPLE EDIT FILE
 
-  This version is intentionally STATIC.
-  No live market API. No serverless functions. No build step.
-  This should deploy on Vercel as a plain static website.
+  This version is intentionally STATIC:
+  - No live market prices
+  - No fake charts
+  - No backend/API
+  - No build step
 
   To update the website:
   1. Edit this file.
@@ -24,7 +26,7 @@ window.SITE_CONTENT = {
     name: "Tyger Ji",
     role: "NYU Stern Finance · Investment Research · Market Notes",
     email: "tygerji0619@gmail.com",
-    headline: "Market notes for people who care about the reasoning, not just the call.",
+    headline: "Market notes with reasoning, not just headlines.",
     subheadline:
       "This is my personal research notebook: market outlooks, ticker views, investment frameworks, and the videos/articles I’m using to sharpen my thinking.",
     heroImage:
@@ -64,170 +66,397 @@ window.SITE_CONTENT = {
     SPY: {
       name: "S&P 500 ETF",
       sector: "Broad Market",
-      stance: "Neutral / Core benchmark",
-      referencePrice: "Manual",
-      targetRange: "Not a single-name target",
-      upsideCase: "Breadth improves and earnings revisions stay positive.",
-      downsideCase: "Mega-cap leadership weakens and multiples compress.",
+      stance: "Neutral / core benchmark",
+      lens: "Breadth check",
+      timeHorizon: "Market cycle",
+      setup: "A good benchmark, but not a full diversification answer.",
       thesis:
-        "I use SPY as the main benchmark, but I don’t think owning the index automatically means being diversified. The index can look strong while the average stock feels weak.",
-      catalyst:
-        "Watch equal-weight performance, earnings breadth, Fed language, and whether cyclicals/small caps begin participating.",
-      chart: [482, 501, 517, 530, 541, 548]
+        "I use SPY as the main market reference, but I don’t think owning the index automatically means being diversified. The index can look strong while the average stock feels weaker underneath.",
+      businessEngine:
+        "SPY is basically a capitalization-weighted read on U.S. large-cap earnings power. The biggest companies matter more than the average company.",
+      marketDebate:
+        "The debate is not only valuation. It is whether earnings growth is broadening or whether the index is still too dependent on mega-cap technology.",
+      myRead:
+        "I would not use SPY as my only equity expression right now. I would pair it with single-name work, equal-weight checks, and sector rotation analysis.",
+      upsideCase:
+        "Breadth improves, earnings revisions stay positive, and rates stop pressuring multiples.",
+      downsideCase:
+        "Mega-cap leadership weakens, inflation stays sticky, and the multiple compresses.",
+      whatIWatch:
+        "Equal-weight S&P 500, sector breadth, earnings revisions, Fed language, and whether financials/industrials/small caps begin participating.",
+      scorecard: [
+        { label: "Breadth dependence", value: 76 },
+        { label: "Valuation sensitivity", value: 68 },
+        { label: "Core portfolio utility", value: 88 }
+      ],
+      questions: [
+        "Is the average stock confirming the index move?",
+        "Are earnings revisions broadening beyond mega-cap tech?",
+        "Is the market paying too much for index-level safety?"
+      ]
     },
+
     QQQ: {
       name: "Nasdaq 100 ETF",
       sector: "Growth / Technology",
       stance: "Constructive but crowded",
-      referencePrice: "Manual",
-      targetRange: "High beta to AI and rates",
-      upsideCase: "AI capex translates into revenue acceleration and margin durability.",
-      downsideCase: "Rates rise or AI leaders fail to justify expectations.",
+      lens: "AI + rates sensitivity",
+      timeHorizon: "6–18 months",
+      setup: "The cleanest ETF expression of growth, AI, and mega-cap tech momentum.",
       thesis:
         "QQQ is still the cleanest way to watch growth and AI risk appetite. The issue is that a lot of good news is already priced into the largest names.",
-      catalyst:
-        "Watch real yields, mega-cap earnings guidance, AI monetization, and market breadth outside the top few names.",
-      chart: [405, 421, 438, 452, 466, 473]
+      businessEngine:
+        "The engine is mega-cap technology earnings: cloud, semis, software, digital advertising, and consumer technology.",
+      marketDebate:
+        "The debate is whether AI capex and software adoption can keep driving earnings fast enough to justify premium valuations.",
+      myRead:
+        "I like the quality of the underlying companies, but I would be careful chasing after major rallies. I would rather add during volatility than buy into euphoria.",
+      upsideCase:
+        "AI monetization becomes clearer, earnings revisions keep moving higher, and real yields move lower.",
+      downsideCase:
+        "Rates rise, AI leaders miss expectations, or investors rotate toward cheaper cyclicals.",
+      whatIWatch:
+        "Real yields, mega-cap earnings guidance, AI capex commentary, software demand, and whether market leadership broadens.",
+      scorecard: [
+        { label: "AI exposure", value: 92 },
+        { label: "Crowding risk", value: 82 },
+        { label: "Earnings quality", value: 85 }
+      ],
+      questions: [
+        "Are earnings growing into the multiple?",
+        "Is AI monetization visible or still mostly narrative?",
+        "Would I still like the exposure if rates moved higher?"
+      ]
     },
+
     MSFT: {
       name: "Microsoft",
       sector: "Cloud / AI Infrastructure",
       stance: "Constructive",
-      referencePrice: "Manual",
-      targetRange: "Base-case: premium compounder",
-      upsideCase: "AI becomes visible in Azure growth, Copilot adoption, and operating leverage.",
-      downsideCase: "AI capex grows faster than monetization and margins get pressured.",
+      lens: "Enterprise AI compounder",
+      timeHorizon: "Multi-year",
+      setup: "A high-quality enterprise platform with AI distribution already built in.",
       thesis:
         "Microsoft is one of the cleaner AI stories because it already has enterprise distribution. My question is not whether AI matters; it is how fast AI shows up in revenue and margin.",
-      catalyst:
-        "Azure growth, Copilot traction, AI infrastructure margins, and management commentary on capex discipline.",
-      chart: [380, 395, 404, 412, 419, 427]
+      businessEngine:
+        "The engine is Azure, Office, enterprise software, security, and workflow integration. Microsoft has the customer base to push AI into daily enterprise use.",
+      marketDebate:
+        "The main debate is capex versus monetization. Investors want to know whether AI infrastructure spending converts into durable revenue growth.",
+      myRead:
+        "I like Microsoft because its AI story is attached to existing enterprise workflows, not just speculative future use cases. I would watch margin pressure carefully.",
+      upsideCase:
+        "Azure growth stays strong, Copilot adoption improves, and AI infrastructure spend produces visible revenue acceleration.",
+      downsideCase:
+        "AI capex grows faster than monetization and investors start questioning the return profile.",
+      whatIWatch:
+        "Azure growth, Copilot traction, AI infrastructure margins, enterprise demand, and management’s capex discipline.",
+      scorecard: [
+        { label: "Distribution advantage", value: 94 },
+        { label: "Capex risk", value: 70 },
+        { label: "Earnings durability", value: 88 }
+      ],
+      questions: [
+        "Is Copilot becoming a real revenue driver?",
+        "Can Azure keep share while funding AI infrastructure?",
+        "Are margins absorbing the AI investment cycle?"
+      ]
     },
+
     NVDA: {
       name: "NVIDIA",
       sector: "Semiconductors / AI",
       stance: "Positive, but crowded",
-      referencePrice: "Manual",
-      targetRange: "High upside / high expectation",
-      upsideCase: "Demand remains supply-constrained and earnings revisions keep moving higher.",
-      downsideCase: "Hyperscalers digest inventory, margins normalize, or expectations outrun fundamentals.",
+      lens: "AI infrastructure leader",
+      timeHorizon: "Event-driven",
+      setup: "Best-in-class AI exposure, but expectations are extremely high.",
       thesis:
         "NVIDIA is still the center of the AI infrastructure cycle. The risk is not that the business is bad. The risk is that the stock already assumes near-perfect execution.",
-      catalyst:
-        "Data center revenue, gross margins, backlog commentary, Blackwell ramp, and hyperscaler capex plans.",
-      chart: [98, 108, 119, 126, 139, 133]
+      businessEngine:
+        "The engine is data center GPUs, networking, CUDA software ecosystem, and hyperscaler AI infrastructure demand.",
+      marketDebate:
+        "The debate is whether demand remains structurally supply-constrained or whether customers eventually digest capacity and pressure growth rates.",
+      myRead:
+        "I respect the business a lot, but I would not treat the stock as risk-free. The more perfect the setup looks, the more sensitive the stock becomes to any slowdown in expectations.",
+      upsideCase:
+        "Demand stays supply-constrained, Blackwell ramps cleanly, and earnings revisions continue higher.",
+      downsideCase:
+        "Hyperscalers pause/digest inventory, margins normalize, or competitive/custom silicon pressure increases.",
+      whatIWatch:
+        "Data center revenue, gross margin, Blackwell ramp, networking attach, hyperscaler capex plans, and backlog commentary.",
+      scorecard: [
+        { label: "AI leadership", value: 98 },
+        { label: "Expectation risk", value: 90 },
+        { label: "Moat quality", value: 92 }
+      ],
+      questions: [
+        "How much demand is structural versus pulled forward?",
+        "Can margins stay elevated as supply normalizes?",
+        "What happens if hyperscalers slow capex for one quarter?"
+      ]
     },
+
     META: {
       name: "Meta Platforms",
       sector: "Digital Ads / AI",
       stance: "Selective Buy",
-      referencePrice: "Manual",
-      targetRange: "Upside if AI improves ad efficiency",
-      upsideCase: "AI spend improves targeting, engagement, and ad pricing.",
-      downsideCase: "Capex stays open-ended and investors start questioning return on AI spend.",
+      lens: "Cash flow vs AI capex",
+      timeHorizon: "12–24 months",
+      setup: "A highly profitable ad business funding a major AI investment cycle.",
       thesis:
         "Meta is interesting because the core ad business still throws off a lot of cash. The market debate is whether AI capex becomes a real earnings engine or just a margin overhang.",
-      catalyst:
-        "Ad growth, Reels monetization, AI capex guidance, Reality Labs losses, and engagement trends.",
-      chart: [410, 438, 470, 492, 505, 512]
+      businessEngine:
+        "The engine is digital advertising across Facebook, Instagram, Reels, messaging, and AI-driven ad targeting.",
+      marketDebate:
+        "The debate is whether AI spending improves engagement and ad efficiency enough to justify the scale of infrastructure investment.",
+      myRead:
+        "I like the cash generation, but I would not ignore capex. If AI makes ads more effective, the spend is justified. If not, the stock can rerate lower.",
+      upsideCase:
+        "AI improves targeting, engagement, creator tools, and ad pricing while core ads stay resilient.",
+      downsideCase:
+        "Capex remains open-ended, Reality Labs losses continue, and investors lose patience with spending.",
+      whatIWatch:
+        "Ad growth, Reels monetization, AI capex guidance, Reality Labs losses, engagement trends, and operating expense discipline.",
+      scorecard: [
+        { label: "Cash generation", value: 91 },
+        { label: "AI capex risk", value: 85 },
+        { label: "Ad cycle exposure", value: 72 }
+      ],
+      questions: [
+        "Is AI improving ad ROI in a measurable way?",
+        "Is capex still disciplined?",
+        "Can Meta maintain margins while funding AI infrastructure?"
+      ]
     },
+
     AMZN: {
       name: "Amazon",
       sector: "Cloud / Consumer",
       stance: "Constructive",
-      referencePrice: "Manual",
-      targetRange: "Operating leverage setup",
-      upsideCase: "AWS reaccelerates and retail margins continue expanding.",
-      downsideCase: "Consumer demand weakens or AWS competition pressures growth.",
+      lens: "Operating leverage setup",
+      timeHorizon: "Multi-year",
+      setup: "Multiple earnings levers: AWS, retail margin, advertising, and logistics scale.",
       thesis:
         "Amazon has multiple levers: AWS, retail efficiency, advertising, and logistics scale. I like the setup because operating leverage can drive earnings even if revenue growth is not perfect.",
-      catalyst:
-        "AWS growth, advertising revenue, retail operating margin, and fulfillment cost discipline.",
-      chart: [156, 163, 171, 177, 183, 189]
+      businessEngine:
+        "The engine is AWS profitability, North America retail scale, advertising revenue, Prime ecosystem retention, and logistics efficiency.",
+      marketDebate:
+        "The debate is whether AWS can reaccelerate while Amazon keeps expanding retail margins and absorbing AI infrastructure costs.",
+      myRead:
+        "Amazon is attractive when investors can see both growth and margin expansion. The key is whether AWS and ads can keep pulling the earnings model higher.",
+      upsideCase:
+        "AWS reaccelerates, retail margins expand, advertising keeps growing, and logistics efficiency improves.",
+      downsideCase:
+        "Consumer demand slows, AWS competition rises, and reinvestment eats into margin expansion.",
+      whatIWatch:
+        "AWS growth, advertising revenue, North America operating margin, fulfillment costs, and AI infrastructure commentary.",
+      scorecard: [
+        { label: "Operating leverage", value: 88 },
+        { label: "AWS importance", value: 90 },
+        { label: "Consumer cyclicality", value: 65 }
+      ],
+      questions: [
+        "Is AWS growth reaccelerating sustainably?",
+        "Can retail margins keep improving?",
+        "How much AI capex is required to stay competitive?"
+      ]
     },
+
     GOOGL: {
       name: "Alphabet",
       sector: "Search / Cloud / AI",
       stance: "Balanced risk-reward",
-      referencePrice: "Manual",
-      targetRange: "Reasonable if search holds",
-      upsideCase: "AI strengthens search and cloud margins keep improving.",
-      downsideCase: "AI search changes user behavior and regulation pressures the multiple.",
+      lens: "Search durability vs AI disruption",
+      timeHorizon: "12–24 months",
+      setup: "A strong core business with a real AI search question.",
       thesis:
         "Alphabet is a good example of a company that can be cheap for a reason or cheap because investors are over-discounting risk. I think the core business is still strong, but the AI search question is real.",
-      catalyst:
-        "Search revenue, cloud profitability, AI product adoption, and antitrust updates.",
-      chart: [146, 152, 164, 172, 181, 176]
+      businessEngine:
+        "The engine is Search, YouTube, Google Cloud, Android distribution, and AI infrastructure.",
+      marketDebate:
+        "The debate is whether generative AI changes search behavior enough to pressure margins, traffic, or ad monetization.",
+      myRead:
+        "I think Alphabet still has enormous assets, but the stock deserves a debate. The key is whether AI becomes a defensive moat or an attack on the core search profit pool.",
+      upsideCase:
+        "AI strengthens search, Google Cloud scales profitably, YouTube remains strong, and the market gains confidence in AI monetization.",
+      downsideCase:
+        "AI search changes user behavior, regulatory pressure increases, and capex weighs on free cash flow.",
+      whatIWatch:
+        "Search revenue, AI Overviews monetization, Cloud growth/profitability, YouTube growth, antitrust updates, and capex guidance.",
+      scorecard: [
+        { label: "Core profit pool", value: 92 },
+        { label: "AI disruption risk", value: 78 },
+        { label: "Cloud optionality", value: 80 }
+      ],
+      questions: [
+        "Does AI protect or weaken search?",
+        "Can Cloud become a larger profit contributor?",
+        "How much regulatory risk should the multiple reflect?"
+      ]
     },
+
     AAPL: {
       name: "Apple",
       sector: "Consumer Tech",
       stance: "Neutral / quality watchlist",
-      referencePrice: "Manual",
-      targetRange: "Needs growth acceleration",
-      upsideCase: "Services growth, product cycle improvement, and AI features support replacement demand.",
-      downsideCase: "iPhone demand stays soft and valuation remains too expensive for the growth rate.",
+      lens: "Quality, but needs growth",
+      timeHorizon: "Long-term watchlist",
+      setup: "A high-quality ecosystem, but the stock needs a clearer growth catalyst.",
       thesis:
         "Apple is a high-quality business, but quality alone is not enough. I would rather see clearer evidence of growth acceleration before getting aggressive.",
-      catalyst:
-        "iPhone demand, services growth, China trends, buybacks, and AI-related product cycle commentary.",
-      chart: [184, 190, 188, 196, 205, 214]
+      businessEngine:
+        "The engine is the iPhone ecosystem, services, wearables, installed base loyalty, and capital return.",
+      marketDebate:
+        "The debate is whether Apple can find the next growth leg through services, AI, or a new product cycle.",
+      myRead:
+        "I respect the business, but I do not want to overpay for defensive quality if revenue growth is limited. I would rather wait for a better setup or clearer catalyst.",
+      upsideCase:
+        "Services keep compounding, AI features support a replacement cycle, and capital return remains strong.",
+      downsideCase:
+        "iPhone demand stays soft, China remains pressured, and AI features fail to drive upgrades.",
+      whatIWatch:
+        "iPhone demand, services growth, China trends, gross margin, buybacks, and Apple Intelligence adoption.",
+      scorecard: [
+        { label: "Ecosystem quality", value: 95 },
+        { label: "Growth clarity", value: 58 },
+        { label: "Capital return", value: 90 }
+      ],
+      questions: [
+        "What is the next real growth driver?",
+        "Can services offset slower hardware cycles?",
+        "Will AI actually drive upgrades?"
+      ]
     },
+
     AMD: {
       name: "Advanced Micro Devices",
       sector: "Semiconductors",
       stance: "Watchlist / AI optionality",
-      referencePrice: "Manual",
-      targetRange: "Upside if AI share gains become real",
-      upsideCase: "MI-series adoption improves and data center growth accelerates.",
-      downsideCase: "NVIDIA keeps most of the economics and AMD margins disappoint.",
+      lens: "NVIDIA alternative",
+      timeHorizon: "Execution-driven",
+      setup: "Interesting upside if AI accelerator share gains become visible.",
       thesis:
         "AMD is the kind of name where the story can get very exciting, but I need proof. The setup is attractive if it can take meaningful AI accelerator share.",
-      catalyst:
-        "Data center GPU revenue, customer wins, gross margin, and guidance around AI accelerator demand.",
-      chart: [118, 124, 131, 147, 151, 156]
+      businessEngine:
+        "The engine is data center CPUs, AI accelerators, client CPUs, gaming, and embedded chips.",
+      marketDebate:
+        "The debate is whether AMD can build a durable data center AI franchise or remains a second-place beneficiary.",
+      myRead:
+        "I like AMD as an AI optionality name, but I would not underwrite it like NVIDIA. It needs customer wins, margin progress, and proof that the data center story is scaling.",
+      upsideCase:
+        "MI-series adoption improves, hyperscaler/customer wins increase, and data center growth accelerates.",
+      downsideCase:
+        "NVIDIA keeps most economics, AMD margins disappoint, or AI revenue expectations get pushed out.",
+      whatIWatch:
+        "Data center GPU revenue, gross margin, customer wins, EPYC share, and guidance around AI demand.",
+      scorecard: [
+        { label: "AI optionality", value: 82 },
+        { label: "Execution risk", value: 80 },
+        { label: "Valuation support", value: 61 }
+      ],
+      questions: [
+        "Are customers adopting AMD because they want choice or because supply is tight?",
+        "Can margins improve as AI revenue scales?",
+        "Is the market already pricing in too much share gain?"
+      ]
     },
+
     MELI: {
       name: "MercadoLibre",
       sector: "LatAm E-commerce / Fintech",
       stance: "High-conviction growth",
-      referencePrice: "Manual",
-      targetRange: "Long-term compounder if credit works",
-      upsideCase: "Fintech flywheel compounds and credit losses stay controlled.",
-      downsideCase: "Emerging-market recession stresses the loan book.",
+      lens: "Commerce + fintech flywheel",
+      timeHorizon: "Multi-year",
+      setup: "A growth company where the ecosystem matters more than any single segment.",
       thesis:
         "MELI is one of my favorite frameworks because commerce creates data, data improves underwriting, credit increases purchasing power, and that drives more commerce.",
-      catalyst:
-        "Credit loss ratios, Mercado Pago growth, Mexico card adoption, advertising revenue, and logistics efficiency.",
-      chart: [1320, 1410, 1505, 1580, 1620, 1670]
+      businessEngine:
+        "The engine is marketplace scale, logistics, Mercado Pago payments, consumer credit, advertising, and regional e-commerce penetration.",
+      marketDebate:
+        "The debate is whether growth investments and credit expansion create durable earnings power or introduce too much emerging-market risk.",
+      myRead:
+        "I like MELI because the fintech flywheel can make the marketplace stronger. But the risk is real: if credit losses spike, the market can change its view quickly.",
+      upsideCase:
+        "Fintech scales, credit losses stay controlled, advertising grows, and logistics strengthens the marketplace moat.",
+      downsideCase:
+        "Emerging-market recession stresses the loan book, FX weakens reported results, or margins compress from growth investment.",
+      whatIWatch:
+        "Credit loss ratios, Mercado Pago growth, credit card adoption, advertising revenue, logistics efficiency, and Brazil/Mexico execution.",
+      scorecard: [
+        { label: "Flywheel strength", value: 93 },
+        { label: "Credit risk", value: 79 },
+        { label: "Long-run runway", value: 90 }
+      ],
+      questions: [
+        "Is credit growth disciplined or too aggressive?",
+        "Does Mercado Pago increase marketplace engagement?",
+        "Can ads become a large high-margin profit pool?"
+      ]
     },
+
     JPM: {
       name: "JPMorgan Chase",
       sector: "Financials",
       stance: "Quality financial",
-      referencePrice: "Manual",
-      targetRange: "Best-in-class bank lens",
-      upsideCase: "Credit stays stable, deposits remain strong, and capital markets recover.",
-      downsideCase: "Credit costs rise, regulation tightens, or net interest income rolls over.",
+      lens: "Macro dashboard",
+      timeHorizon: "Cycle monitor",
+      setup: "Best-in-class bank lens for credit, deposits, and capital markets.",
       thesis:
         "JPM is not just a bank stock to me. It is a macro dashboard for credit, consumer health, deposits, and capital markets activity.",
-      catalyst:
-        "Net interest income, credit losses, deposit trends, investment banking activity, and capital return.",
-      chart: [198, 203, 211, 217, 222, 225]
+      businessEngine:
+        "The engine is net interest income, payments, trading, investment banking, credit cards, deposits, and scale advantages.",
+      marketDebate:
+        "The debate is whether normalized credit costs and lower rates pressure earnings after a strong banking cycle.",
+      myRead:
+        "I like JPM as the highest-quality bank read-through, but I would still watch credit normalization and regulatory capital requirements.",
+      upsideCase:
+        "Credit stays stable, investment banking recovers, deposits remain strong, and capital return continues.",
+      downsideCase:
+        "Credit costs rise, net interest income rolls over, or regulation pressures capital return.",
+      whatIWatch:
+        "Net interest income, credit losses, deposit trends, investment banking activity, trading revenue, and capital return.",
+      scorecard: [
+        { label: "Franchise quality", value: 94 },
+        { label: "Credit cycle risk", value: 70 },
+        { label: "Macro usefulness", value: 90 }
+      ],
+      questions: [
+        "Are credit losses normalizing or accelerating?",
+        "What happens to NII if rates fall?",
+        "Can investment banking offset slower consumer credit?"
+      ]
     },
+
     BABA: {
       name: "Alibaba",
       sector: "China Internet",
       stance: "Contrarian / high risk",
-      referencePrice: "Manual",
-      targetRange: "Cheap, but needs confidence repair",
-      upsideCase: "China sentiment improves and capital return supports the stock.",
-      downsideCase: "Macro weakness, policy risk, and competition continue to weigh on valuation.",
+      lens: "Cheap, but needs confidence",
+      timeHorizon: "High-volatility",
+      setup: "A low-valuation name where the catalyst has to be confidence repair.",
       thesis:
         "Alibaba is cheap, but cheap alone is not a thesis. The question is whether the market can regain confidence in the business, the macro backdrop, and capital allocation.",
-      catalyst:
-        "China consumer data, cloud performance, buybacks, policy tone, and geopolitical sentiment.",
-      chart: [76, 79, 84, 88, 85, 82]
+      businessEngine:
+        "The engine is China commerce, cloud, international commerce, logistics, and capital return.",
+      marketDebate:
+        "The debate is whether AI/cloud growth and buybacks can offset China macro weakness and investor distrust.",
+      myRead:
+        "I would treat BABA as a contrarian idea, not a safe value stock. The upside can be meaningful, but the market needs a reason to believe again.",
+      upsideCase:
+        "China sentiment improves, cloud/AI growth accelerates, buybacks continue, and policy tone becomes more supportive.",
+      downsideCase:
+        "China consumer remains weak, competition pressures commerce, and geopolitical risk keeps the multiple depressed.",
+      whatIWatch:
+        "China consumer data, cloud growth, AI-related revenue, buybacks, policy tone, and ADR sentiment.",
+      scorecard: [
+        { label: "Valuation appeal", value: 84 },
+        { label: "Macro risk", value: 88 },
+        { label: "Catalyst clarity", value: 55 }
+      ],
+      questions: [
+        "Is this cheap because the market is wrong or because trust is impaired?",
+        "Can cloud/AI become a real rerating catalyst?",
+        "Will buybacks be enough to support sentiment?"
+      ]
     }
   },
 
@@ -257,7 +486,7 @@ window.SITE_CONTENT = {
       date: "Technology note",
       readTime: "6 min",
       image:
-        "https://images.unsplash.com/photo-1518779578993-ec3579fee39f?auto=format&fit=crop&w=1400&q=80",
+        "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=1400&q=80",
       summary:
         "AI is real, but the investor question is who actually captures the economics and when the spending turns into earnings.",
       body: [
@@ -344,24 +573,24 @@ window.SITE_CONTENT = {
   videoLibrary: [
     {
       title: "Bloomberg Surveillance",
-      source: "Bloomberg Television",
+      source: "Macro / rates / daily market tone",
       reason:
-        "Useful for macro tone, rates, Fed commentary, and hearing how institutional investors frame the day.",
-      youtubeId: "xSEP1fdOK-M"
+        "Useful when I want to hear how institutional investors are framing rates, inflation, Fed language, and risk appetite.",
+      url: "https://www.youtube.com/results?search_query=Bloomberg+Surveillance+markets+Fed+rates"
     },
     {
       title: "The Compound & Friends",
-      source: "Ritholtz / The Compound",
+      source: "Market structure / investor psychology",
       reason:
-        "Good for market structure, portfolio behavior, investor psychology, and less formal but useful market debate.",
-      youtubeId: "4fxT2a52_tc"
+        "Good for market debates that are less formal but useful: breadth, positioning, sentiment, and how real investors are thinking.",
+      url: "https://www.youtube.com/results?search_query=The+Compound+and+Friends+market+breadth+AI"
     },
     {
-      title: "CNBC Fed / Market Coverage",
-      source: "CNBC Television",
+      title: "CNBC Market Close / Fed Coverage",
+      source: "Fast market updates",
       reason:
-        "Useful when I want quick updates on Fed language, inflation, market close reactions, and major stock moves.",
-      youtubeId: "TFYgO4jY67o"
+        "Useful for quick reactions around inflation prints, Fed decisions, major earnings, and market-close commentary.",
+      url: "https://www.youtube.com/results?search_query=CNBC+market+close+Fed+inflation+stocks"
     }
   ],
 

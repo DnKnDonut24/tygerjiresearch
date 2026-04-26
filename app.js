@@ -2,66 +2,27 @@ const C = window.SITE_CONTENT;
 
 let selectedTicker = "MSFT";
 let selectedCategory = "All";
-const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun"];
 
 function $(selector) {
   return document.querySelector(selector);
 }
 
-function chartPoints(values, width = 640, height = 260, padding = 28) {
-  const min = Math.min(...values);
-  const max = Math.max(...values);
-  const range = max - min || 1;
-  return values.map((value, index) => ({
-    x: padding + (index * (width - padding * 2)) / Math.max(values.length - 1, 1),
-    y: height - padding - ((value - min) / range) * (height - padding * 2),
-    value
-  }));
+function renderScoreBars(scorecard) {
+  return scorecard.map(item => `
+    <div class="score-row">
+      <div>
+        <span>${item.label}</span>
+        <strong>${item.value}/100</strong>
+      </div>
+      <div class="score-track">
+        <div class="score-fill" style="width:${item.value}%"></div>
+      </div>
+    </div>
+  `).join("");
 }
 
-function chartPath(values, width = 640, height = 260, padding = 28) {
-  return chartPoints(values, width, height, padding)
-    .map((point, index) => `${index === 0 ? "M" : "L"} ${point.x.toFixed(2)} ${point.y.toFixed(2)}`)
-    .join(" ");
-}
-
-function miniChart(values) {
-  const positive = values[values.length - 1] >= values[0];
-  return `
-    <svg class="mini-chart" viewBox="0 0 180 58" preserveAspectRatio="none">
-      <path d="${chartPath(values, 180, 58, 6)}" class="${positive ? "mini-line up-line" : "mini-line down-line"}"></path>
-    </svg>
-  `;
-}
-
-function mainChart(values, ticker) {
-  const path = chartPath(values);
-  const points = chartPoints(values);
-  const min = Math.min(...values);
-  const max = Math.max(...values);
-  const area = `${path} L 612 232 L 28 232 Z`;
-
-  return `
-    <svg class="main-chart" viewBox="0 0 640 260" role="img" aria-label="${ticker} illustrative trend chart">
-      <defs>
-        <linearGradient id="chartFill" x1="0" x2="0" y1="0" y2="1">
-          <stop offset="0%" stop-color="rgba(166,124,82,.34)" />
-          <stop offset="100%" stop-color="rgba(166,124,82,0)" />
-        </linearGradient>
-      </defs>
-      ${[0, 1, 2, 3].map(i => `<line x1="28" x2="612" y1="${36 + i * 52}" y2="${36 + i * 52}" class="grid-line"></line>`).join("")}
-      <path d="${area}" fill="url(#chartFill)"></path>
-      <path d="${path}" class="main-line"></path>
-      ${points.map((point, index) => `
-        <g>
-          <circle cx="${point.x}" cy="${point.y}" r="4.5" class="chart-dot"></circle>
-          <text x="${point.x}" y="252" text-anchor="middle" class="chart-label">${months[index] || ""}</text>
-        </g>
-      `).join("")}
-      <text x="36" y="28" class="axis-label">${max.toFixed(0)}</text>
-      <text x="36" y="226" class="axis-label">${min.toFixed(0)}</text>
-    </svg>
-  `;
+function renderQuestionList(questions) {
+  return questions.map(question => `<li>${question}</li>`).join("");
 }
 
 function renderShell() {
@@ -161,7 +122,7 @@ function renderShell() {
       <section id="videos" class="section split-heading">
         <div>
           <p class="kicker">Video watchlist</p>
-          <h2>Videos I would use to sharpen the market view.</h2>
+          <h2>YouTube inputs I would use to sharpen the market view.</h2>
         </div>
         <p>
           These are not meant to replace my own view. They are inputs: macro tone,
@@ -172,18 +133,11 @@ function renderShell() {
       <section class="video-grid">
         ${C.videoLibrary.map(video => `
           <article class="video-card">
-            <div class="video-frame">
-              <iframe
-                src="https://www.youtube.com/embed/${video.youtubeId}"
-                title="${video.title}"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                allowfullscreen>
-              </iframe>
-            </div>
             <div>
               <span>${video.source}</span>
               <h3>${video.title}</h3>
               <p>${video.reason}</p>
+              <a href="${video.url}" target="_blank" rel="noreferrer">Open on YouTube →</a>
             </div>
           </article>
         `).join("")}
@@ -212,7 +166,7 @@ function renderShell() {
 
     <footer>
       <strong>${C.profile.brand}</strong>
-      <span>Research views are educational and not investment advice. Ticker data is manually maintained.</span>
+      <span>Research views are educational and not investment advice. Ticker views are manually maintained.</span>
       <a href="mailto:${C.profile.email}">${C.profile.email}</a>
     </footer>
 
@@ -234,7 +188,7 @@ function renderShell() {
 
 function renderTickers(search = "") {
   const tickers = Object.entries(C.tickerViews).filter(([ticker, item]) => {
-    const text = `${ticker} ${item.name} ${item.sector} ${item.stance}`.toLowerCase();
+    const text = `${ticker} ${item.name} ${item.sector} ${item.stance} ${item.lens}`.toLowerCase();
     return text.includes(search.toLowerCase());
   });
 
@@ -247,7 +201,11 @@ function renderTickers(search = "") {
         </div>
         <em>${item.stance}</em>
       </div>
-      ${miniChart(item.chart)}
+      <p>${item.setup}</p>
+      <div class="ticker-tags">
+        <span>${item.sector}</span>
+        <span>${item.lens}</span>
+      </div>
     </button>
   `).join("");
 }
@@ -268,17 +226,39 @@ function renderTickerPanel() {
       </div>
     </div>
 
-    ${mainChart(item.chart, selectedTicker)}
+    <section class="insight-hero">
+      <div>
+        <span>Core Takeaway</span>
+        <h4>${item.setup}</h4>
+        <p>${item.thesis}</p>
+      </div>
+      <aside>
+        <span>Lens</span>
+        <strong>${item.lens}</strong>
+        <small>${item.timeHorizon}</small>
+      </aside>
+    </section>
 
-    <div class="analysis-grid">
+    <div class="insight-grid">
       <article>
-        <span>Reference Price</span>
-        <strong>${item.referencePrice}</strong>
+        <span>Business Engine</span>
+        <p>${item.businessEngine}</p>
       </article>
       <article>
-        <span>Target / Setup</span>
-        <strong>${item.targetRange}</strong>
+        <span>Market Debate</span>
+        <p>${item.marketDebate}</p>
       </article>
+      <article>
+        <span>My Read</span>
+        <p>${item.myRead}</p>
+      </article>
+      <article>
+        <span>What I’m Watching</span>
+        <p>${item.whatIWatch}</p>
+      </article>
+    </div>
+
+    <div class="case-grid">
       <article>
         <span>Upside Case</span>
         <p>${item.upsideCase}</p>
@@ -287,14 +267,17 @@ function renderTickerPanel() {
         <span>Downside Case</span>
         <p>${item.downsideCase}</p>
       </article>
-      <article class="wide">
-        <span>Working Thesis</span>
-        <p>${item.thesis}</p>
-      </article>
-      <article class="wide">
-        <span>What I’m Watching</span>
-        <p>${item.catalyst}</p>
-      </article>
+    </div>
+
+    <div class="research-bottom">
+      <section class="score-card">
+        <span>Qualitative Scorecard</span>
+        ${renderScoreBars(item.scorecard)}
+      </section>
+      <section class="question-card">
+        <span>Questions I’d Keep Testing</span>
+        <ul>${renderQuestionList(item.questions)}</ul>
+      </section>
     </div>
   `;
 }

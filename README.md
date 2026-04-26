@@ -1,8 +1,9 @@
-# Tyger Ji Research — Static Version
+# Tyger Ji Research — Static Version v5
 
 This version intentionally has:
 
 - No live market API
+- No fake price charts
 - No serverless functions
 - No package.json
 - No build step
@@ -36,12 +37,12 @@ Open `content.js`.
 
 Edit:
 - Ticker views
-- Manual reference prices / target comments
+- Qualitative scorecards
 - Blog posts
-- YouTube video IDs
+- YouTube video search links
 - Market outlook text
 - Email/contact text
 
 ## Important
 
-Ticker data is manually maintained and intentionally not live. The footer states this clearly.
+Ticker views are manually maintained and intentionally not live. The footer states this clearly.
